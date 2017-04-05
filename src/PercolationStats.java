@@ -1,5 +1,4 @@
-import java.util.Random;
-import edu.princeton.cs.algs4.StdStats;
+import edu.princeton.cs.algs4.*;
 import java.lang.Math;
 
 public class PercolationStats {
@@ -10,15 +9,21 @@ public class PercolationStats {
         results = new double[trials];
         this.n = n;
         T = trials;
+        StdDraw.enableDoubleBuffering();
         for (int i = 0; i < trials; i++) {
+            System.out.println("Iteração numero: " + i);
             Percolation perc = new Percolation(n);
-            Random rand = new Random();
             while (!perc.percolates()) {
-                int row = rand.nextInt();
-                int col = rand.nextInt();
+                int row = StdRandom.uniform(n);
+                int col = StdRandom.uniform(n);
                 perc.open(row, col);
+                //System.out.println("Abriu: " + row + " " + col);
+                PercolationVisualizer.draw(perc, n);
+                StdDraw.show();
             }
-            results[i] = perc.numberOfOpenSites()/n;
+            results[i] = (double)perc.numberOfOpenSites()/(double)(n * n);
+            System.out.println("results[" + i + "]: " + results[i]);
+            StdDraw.pause(500);
         }
     }
 
