@@ -13,8 +13,8 @@ import java.lang.*;
 public class Percolation {
 
     WeightedQuickUnionUF uf;
-    int[][] board;
-    int size;
+    private int[][] board;
+    private int size;
 
     public Percolation(int n) {
         if (n <= 0) throw IllegalArgumentException("The board size must be >= 0");
