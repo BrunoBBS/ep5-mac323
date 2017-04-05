@@ -64,11 +64,17 @@ public class Percolation {
         return board[row][col] == 2;
     }
 
+    public int numberOfOpenSites() {
+        // Pensar num jeito de fazer isso O(1)
+    }
+
+    // Returns if the board percolates
     public boolean percolates() {
 
     }
 
-    public void open() {
+    // Unit test
+    public static void main(String[] args) {
 
     }
 }
