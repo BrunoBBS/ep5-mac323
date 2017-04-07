@@ -9,21 +9,26 @@ public class PercolationStats {
         results = new double[trials];
         this.n = n;
         T = trials;
-        StdDraw.enableDoubleBuffering();
-        for (int i = 0; i < trials; i++) {
-            System.out.println("Iteração numero: " + i);
-            Percolation perc = new Percolation(n);
-            while (!perc.percolates()) {
-                int row = StdRandom.uniform(n);
-                int col = StdRandom.uniform(n);
-                perc.open(row, col);
-                //System.out.println("Abriu: " + row + " " + col);
-                PercolationVisualizer.draw(perc, n);
-                StdDraw.show();
+        //StdDraw.enableDoubleBuffering();
+        int max_threads = 16;
+
+        PercolationThread[] threads = new PercolationThread[trials];
+        try {
+            for (int i = 0; i < trials; i++) {
+                if (i > max_threads) threads[i - max_threads].join();
+                threads[i] = new PercolationThread(i);
+                threads[i].start();
             }
-            results[i] = (double)perc.numberOfOpenSites()/(double)(n * n);
+
+            for (int i = 0; i < trials; i++)
+                threads[i].join();
+        } catch (Exception exception) {
+        }
+
+
+
+        for (int i = 0; i < trials; i++) {
             System.out.println("results[" + i + "]: " + results[i]);
-            StdDraw.pause(500);
         }
     }
 
@@ -42,6 +47,29 @@ public class PercolationStats {
 
     public double confidenceHigh() {
         return (mean() + (1.96 * stddev())/Math.sqrt(T));
+    }
+
+    public class PercolationThread extends Thread {
+        private int thread_id;
+
+        PercolationThread(int thread_id) {
+            this.thread_id = thread_id;
+        }
+
+        public void run() {
+            System.out.println("Iteração numero: " + thread_id);
+            Percolation perc = new Percolation(n);
+            while (!perc.percolates()) {
+                int row = StdRandom.uniform(n);
+                int col = StdRandom.uniform(n);
+                perc.open(row, col);
+                //System.out.println("Abriu: " + row + " " + col);
+                //PercolationVisualizer.draw(perc, n);
+                //StdDraw.show();
+            }
+            results[thread_id] = (double)perc.numberOfOpenSites()/(double)(n * n);
+            //StdDraw.pause(500);
+        }
     }
 }
 
