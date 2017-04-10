@@ -6,6 +6,7 @@ public class PercolationStats {
     int n, T;
 
     public PercolationStats(int n, int trials) {
+        if (trials <= 0) throw  new IllegalArgumentException("The number of trials must be >= 0.");
         results = new double[trials];
         this.n = n;
         T = trials;
@@ -16,7 +17,10 @@ public class PercolationStats {
                 int col = StdRandom.uniform(n);
                 perc.open(row, col);
             }
-            results[i] = (double)perc.numberOfOpenSites()/(double)(n * n);
+            if (n == 1) results[i] = 1;
+            else {
+                results[i] = (double)perc.numberOfOpenSites()/(double)(n * n);
+            }
         }
     }
 
